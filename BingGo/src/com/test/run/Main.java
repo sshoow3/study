@@ -18,6 +18,12 @@ public class Main {
 
 	/**
 	 * 실행기 1.게임판크기 설정 최소 4X4 2.게임 유형(1인용 , vs CPU) 3.빙고판 입력여부 4.난이도 결정
+	 * @param String[]
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.19	김진호               작성
 	 */
 	public static void main(String[] args) {
 		System.out.println("안녕하세요 빙고게임판입니다.");

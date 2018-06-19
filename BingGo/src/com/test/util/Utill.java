@@ -12,12 +12,18 @@ public class Utill {
 	static Logger log = Logger.getLogger(Utill.class.getName());
 
 	/**
-	 * 호출시 셋팅값입력 - 초기셋팅시 필요
-	 * param int[3]
+	 * 호출시 셋팅값입력 - 초기셋팅시 필요<br>
+	 * param int[3]<br>
 	 * [0] 빙고판 크기
-	 * [1] 게임유형
+	 * [1] 게임유형<br>
 	 * [2] 랜덤여부
-	 * [3] 난이도
+	 * [3] 난이도<br>
+	 * @param int[]
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.19	김진호               작성
 	*/
 	public Utill(int[] setting) {
 		if (setting[3] == 2)
@@ -34,9 +40,15 @@ public class Utill {
 	}
 
 	/**
-	 * 빙고판 초기값 설정
-	 * 
+	 * 빙고판 초기값 설정<br>
 	 * Parameters: 1. int 게임판크기 , 2.int 랜덤여부 , 3 int 난이도
+	 * @param int[][]
+	 * @return  int[][]
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.19	김진호               작성
 	 */
 	public int[][] startSetting(int[] setting) {
 		Scanner sc = new Scanner(System.in);
@@ -102,6 +114,13 @@ public class Utill {
 
 	/**
 	 * 체크보드 초기셋팅
+	 * @param int
+	 * @return  boolean[][]
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.19	김진호               작성
 	 */
 	public boolean[][] booleanBoadSetting(int boardsize) {
 		boolean[][] firstboard = new boolean[boardsize][boardsize];
@@ -116,6 +135,12 @@ public class Utill {
 
 	/**
 	 * 보드 출력 화면 - 입력화면
+	 * @param int[][]
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.19	김진호               작성
 	 */
 	public static void boardInsertview(int[][] board) {
 		for (int i = 0; i < board.length; i++) {
@@ -128,6 +153,13 @@ public class Utill {
 
 	/**
 	 * 입력여부 체크
+	 * @param int[] , int
+	 * @return  boolean
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.19	김진호               작성
 	 */
 	public boolean insertCheck(int[] insertNumbers, int insert) {
 		boolean check = true;
@@ -148,6 +180,13 @@ public class Utill {
 
 	/**
 	 * 숫자범위 체크
+	 * @param int
+	 * @return  boolean
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.19	김진호               작성
 	 */
 	public boolean insertArea(int insert) {
 		boolean check = false;
@@ -161,11 +200,18 @@ public class Utill {
 	}
 
 	/**
-	 * 입력값 이외의 자료형 포함여부 체크 
-	 * param = String 입력값 
-	 * return boolean 
-	 * 
+	 * 입력값 이외의 자료형 포함여부 체크 <br>
+	 * param = String 입력값 <br>
+	 * return boolean <br>
+	 * <br>
 	 * 참고 자료 : http://superfelix.tistory.com/70
+	 * @param String
+	 * @return  boolean
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.19	김진호               작성
 	 */
 	public boolean insertEditCheck(String insert) {
 		/*
@@ -191,6 +237,16 @@ public class Utill {
 		return !check;
 	}
 
+	/**
+	 * 입력값 숫자인지 여부 체크 후 숫자일때까지 반복
+	 * @param String
+	 * @return  int
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.19	김진호               작성
+	*/
 	public int whileNumberInserting(String insert) {
 		int result = 0;
 		Scanner sc = new Scanner(System.in);
@@ -209,4 +265,33 @@ public class Utill {
 		return result;
 
 	}
+	
+	/**
+	 * 게임 플레이 중 기록 파일저장 - 작성예정 
+	 * @param String
+	 * @return  int
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.19	김진호               작성
+	*/
+	public void logFileText(){
+//		
+	}
+	
+	/**
+	 * 게임 시작시 환경설정 기록 파일저장 - 작성예정
+	 * @param String
+	 * @return  int
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.19	김진호               작성
+	*/
+	public void startSettingLog(){
+		
+	}
+	
 }
