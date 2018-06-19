@@ -2,6 +2,8 @@ package com.test.run;
 
 import java.util.Scanner;
 
+import com.test.util.Utill;
+
 /**
  * 1. 빙고게임 - 룰 정하기 판 크기(5X5 , 6X6 등등) 승리 조건(몇 줄 이상 빙고여야 하는지) 빙고판 입력 여부(랜덤 혹은 사용자
  * 입력) 입력 숫자 범위 설정(중복되는 숫자가 없도록) 빙고판 입력 여부에 따라 게임 유형 선택 (1인용, vs cpu)
@@ -21,28 +23,38 @@ public class Main {
 		System.out.println("안녕하세요 빙고게임판입니다.");
 		System.out.print("1.게임판 크기를 설정하세요(최소 4) : ");
 		int[] select = new int[10];
-		int select1 = 0;
+		String insertTemp = "";
+		Utill ut = new Utill();
 
 		boolean check = true;
 		try {
-			select[0] = sc.nextInt();
-			if (select[0] < 4) {
+			insertTemp = sc.next();
+			select[0] = ut.whileNumberInserting(insertTemp);
+//			intCheck = ut.insertEditCheck(insertTemp);
+			if (select[0] >= 4) {
 				check = false;
 			}
 		} catch (Exception e) {
 			check = true;
 		}
 
-		while (!check){
+		while (!check) {
 			System.out.println("4미만의 숫자 혹은 숫자가 아닙니다 .");
 			System.out.print("다시 입력해주세요(최소 4) : ");
-			select[0] = sc.nextInt();
-		} ;
+			insertTemp = sc.next();
+			select[0] = ut.whileNumberInserting(insertTemp);
+			if (select[0] >= 4) {
+				check = true;
+			}
+
+		}
+		;
 		// ----------------------------------------------------------
 		select[1] = 0;
 		try {
 			System.out.print("2.게임 유형을 선택하세요 (1)1인용   (2)vs CPU : ");
-			select[1] = sc.nextInt();
+			insertTemp = sc.next();
+			select[1] = ut.whileNumberInserting(insertTemp);
 			if (select[1] == 1 || select[1] == 2) {
 				check = false;
 			}
@@ -53,16 +65,22 @@ public class Main {
 		while (check) {
 			System.out.println("잘못입력하셨습니다.");
 			System.out.print("다시 입력해주세요(1)1인용   (2)vs CPU : ");
-			select[1] = sc.nextInt();
-		} ;
+			insertTemp = sc.next();
+			select[1] = ut.whileNumberInserting(insertTemp);
+			if (select[1] == 1 || select[1] == 2) {
+				check = false;
+			}
+		}
+		;
 		// ----------------------------------------------------------
 		if (select[1] == 1) {
 			select[2] = 1;
 		} else {
 			select[2] = 0;
 			try {
-				System.out.print("빙고을 랜덤으로 받으시겠습니까? (1)Yes  (2)No 직접입력  : ");
-				select[2] = sc.nextInt();
+				System.out.print("3.빙고을 랜덤으로 받으시겠습니까? (1)Yes  (2)No 직접입력  : ");
+				insertTemp = sc.next();
+				select[2] = ut.whileNumberInserting(insertTemp);
 				if (select[2] == 1 || select[2] == 2) {
 					check = false;
 				}
@@ -73,15 +91,21 @@ public class Main {
 			while (check) {
 				System.out.println("잘못입력하셨습니다.");
 				System.out.print("다시 입력해주세요 (1)Yes  (2)No 직접입력 : ");
-				select[2] = sc.nextInt();
-			} ;
+				insertTemp = sc.next();
+				select[2] = ut.whileNumberInserting(insertTemp);
+				if (select[2] == 1 || select[2] == 2) {
+					check = false;
+				}
+			}
+			;
 		}
 		// ----------------------------------------------------------
 		select[3] = 0;
 		try {
-			System.out.printf("4.난이도 결정 (1)Easy 1 ~ %2d  (2)Hard 1 ~ %3d 직접입력: ", (select1 * select1),
-					(select1 * select1 * 4));
-			select[3] = sc.nextInt();
+			System.out.printf("4.난이도 결정 (1)Easy 1 ~ %2d  (2)Hard 1 ~ %3d : ",
+					(select[0] * select[0]), (select[0] * select[0] * 4));
+			insertTemp = sc.next();
+			select[3] = ut.whileNumberInserting(insertTemp);
 			if (select[3] == 1 || select[3] == 2) {
 				check = false;
 			}
@@ -92,10 +116,16 @@ public class Main {
 		while (check) {
 			System.out.println("잘못입력하셨습니다.");
 			System.out.print("다시 입력해주세요(1)1인용   (2)vs CPU: ");
-			select[3] = sc.nextInt();
-		} ;
-		
-		
+			insertTemp = sc.next();
+			select[3] = ut.whileNumberInserting(insertTemp);
+			if (select[3] == 1 || select[3] == 2) {
+				check = false;
+			}
+		}
+		;
+
+		MainBoard mb = new MainBoard(select);
+
 	}
 
 }

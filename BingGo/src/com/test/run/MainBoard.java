@@ -3,6 +3,8 @@ package com.test.run;
  * 게임이 실행되는 메인보드
  * */
 
+import java.util.logging.Logger;
+
 import com.test.board.CPUVO;
 import com.test.board.UserVO;
 import com.test.util.Utill;
@@ -12,6 +14,8 @@ public class MainBoard {
 	static UserVO user;
 	static CPUVO cpu;
 	static Utill util;
+	
+	static Logger log = Logger.getLogger(MainBoard.class.getName());
 	
 	static int[] choiceNum = new int[500];
 	
@@ -32,9 +36,15 @@ public class MainBoard {
 		cpu.setNumberboard(util.startSetting(setting));
 	}
 	
-	
-	public void setting(int[] setting) {
+	/**
+	 * 
+	*/
+	public void singlePlay() {
 		
+		
+	}
+	
+	public void battlePlay(){
 		
 	}
 
