@@ -17,7 +17,7 @@ public class Main {
 	static Scanner sc = new Scanner(System.in);
 
 	/**
-	 * 실행기 1.게임판크기 설정 최소 4X4 2.게임 유형(1인용 , vs CPU) 3.빙고판 입력여부 4.난이도 결정
+	 * 실행기 1.게임판크기 설정 최소 4X4 <br>2.게임 유형(1인용 , vs CPU) 3.빙고판 입력여부 4.난이도 결정
 	 * @param String[]
 	 * @version 0.1
 	 * @see <pre>
@@ -36,7 +36,6 @@ public class Main {
 		try {
 			insertTemp = sc.next();
 			select[0] = ut.whileNumberInserting(insertTemp);
-//			intCheck = ut.insertEditCheck(insertTemp);
 			if (select[0] >= 4) {
 				check = false;
 			}
@@ -44,7 +43,7 @@ public class Main {
 			check = true;
 		}
 
-		while (!check) {
+		while (check) {
 			System.out.println("4미만의 숫자 혹은 숫자가 아닙니다 .");
 			System.out.print("다시 입력해주세요(최소 4) : ");
 			insertTemp = sc.next();
@@ -80,6 +79,7 @@ public class Main {
 		;
 		// ----------------------------------------------------------
 		if (select[1] == 1) {
+			System.out.print("3.1인용 게임은 빙고가 랜덤으로 지급됩니다.");
 			select[2] = 1;
 		} else {
 			select[2] = 0;
@@ -131,7 +131,7 @@ public class Main {
 		;
 
 		MainBoard mb = new MainBoard(select);
-
+		System.out.println("게임을 시작합니다  .");
 	}
 
 }

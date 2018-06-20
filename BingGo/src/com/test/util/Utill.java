@@ -4,12 +4,16 @@ import java.util.Scanner;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import com.test.board.BoardVO;
+import com.test.board.ManagerVO;
+
 /**
  * 설정도구
  */
 public class Utill {
 	static int max;
 	static Logger log = Logger.getLogger(Utill.class.getName());
+	static ManagerVO manager = new ManagerVO();
 
 	/**
 	 * 호출시 셋팅값입력 - 초기셋팅시 필요<br>
@@ -44,7 +48,7 @@ public class Utill {
 	 * Parameters: 1. int 게임판크기 , 2.int 랜덤여부 , 3 int 난이도
 	 * @param int[][]
 	 * @return  int[][]
-	 * @version 0.1
+	 * @version 0.2
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
 	 *   수정일         수정자           수정내용
@@ -54,11 +58,13 @@ public class Utill {
 		Scanner sc = new Scanner(System.in);
 		int[][] firstboard = new int[setting[0]][setting[0]];
 
-		int[] insertnum = new int[setting[0] * setting[0] * 4];
-		int insertcount = 0;
+		ManagerVO numberchking = new ManagerVO();
+		numberchking.setChoiceNum(new int[setting[0] * setting[0] * 4]);
+		numberchking.setInsertcount(0);
 
 		int randomNum = 1;
 		if (setting[2] == 1) {
+			numberchking.setSwich("랜덤제작");
 			for (int i = 0; i < firstboard.length; i++) {
 				for (int j = 0; j < firstboard.length; j++) {
 					firstboard[i][j] = randomNum;
@@ -87,10 +93,7 @@ public class Utill {
 									num = Integer.parseInt(temp);
 									check = insertArea(num);
 									if (check) {
-										check = insertCheck(insertnum, num);
-										if (check) {
-											insertnum[insertcount++] = num;
-										}
+										check = insertCheck(numberchking);
 									}
 								}
 							} catch (Exception e) {
@@ -150,30 +153,108 @@ public class Utill {
 			System.out.println();
 		}
 	}
+	/**
+	 * 게임화면 출력 - 랜덤게임용
+	 * @param int[][]
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.20	김진호               작성
+	*/
+	public static void randomPlayingView(BoardVO board){
+		int[][] numberBoard = board.getNumberboard();
+		boolean[][] checkBoard = board.getCheckboard();
+		for (int i = 0; i < checkBoard.length; i++) {
+			for (int j = 0; j < checkBoard.length; j++) {
+					if (checkBoard[i][j]) System.out.printf(" %3s ","O") ;
+					else System.out.printf(" %3s ","X");
+			}
+			System.out.println();
+		}
+	}
+	
+	/**
+	 *  게임화면 출력 - 수동입력용
+	 * @param int[][]
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.20	김진호               작성
+	*/
+	public static void insertPlayingView(BoardVO board){
+		int[][] numberBoard = board.getNumberboard();
+		boolean[][] checkBoard = board.getCheckboard();
+		for (int i = 0; i < checkBoard.length; i++) {
+			for (int j = 0; j < checkBoard.length; j++) {
+					if (checkBoard[i][j]) System.out.printf(" %3d ", numberBoard[i][j]) ;
+					else System.out.printf(" %3s ","O");
+			}
+			System.out.println();
+		}
+	}
 
 	/**
-	 * 입력여부 체크
+	 * 입력 중복여부 체크 - 초기값 설정용<br>
+	 * 이전에 이미 입력했는지 여부 체크
 	 * @param int[] , int
 	 * @return  boolean
-	 * @version 0.1
+	 * @version 0.2
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
 	 *   수정일         수정자           수정내용
 	 * 18.06.19	김진호               작성
 	 */
-	public boolean insertCheck(int[] insertNumbers, int insert) {
+	public boolean insertCheck(ManagerVO isertVO) {
 		boolean check = true;
+		int[] insertNumbers = isertVO.getChoiceNum();
+		
+		for (int i = 0; i < isertVO.getInsertcount(); i++) {
+			if (insertNumbers[i] ==  isertVO.getInsertNum() ) {
+				check = false;
+				break;
+			}
+		}
 
-		for (int i = 0; i < insertNumbers.length; i++) {
+		if (!check && isertVO.getSwich().equals("랜덤제작"))
+			log.info("이미 입력하신 번호 입니다.");
+		;
+
+		return check;
+	}
+	
+	/**
+	 * 입력 중복여부 체크 - 게임용<br>
+	 * 이전에 이미 입력했는지 여부 체크
+	 * @param int
+	 * @return  boolean
+	 * @version 0.2
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.20	김진호               작성
+	 */
+	public boolean insertCheck(int insert) {
+		boolean check = true;
+		int insertNumbers[] = manager.getChoiceNum();
+		int insertcount = manager.getInsertcount();
+		
+
+		for (int i = 0; i < insertcount; i++) {
 			if (insertNumbers[i] == insert) {
 				check = false;
 				break;
 			}
 		}
 
-		if (!check)
-			log.info("이미 입력하신 번호 입니다.");
-		;
+		if (!check)log.info("이미 입력하신 번호 입니다.");
+		else {
+			insertNumbers[insertcount] = insert;
+			insertcount++;
+			manager.setChoiceNum(insertNumbers);
+			manager.setInsertcount(insertcount);
+		}
 
 		return check;
 	}
@@ -238,7 +319,7 @@ public class Utill {
 	}
 
 	/**
-	 * 입력값 숫자인지 여부 체크 후 숫자일때까지 반복
+	 * 입력값이 숫자인지 여부 체크 후 숫자일때까지 반복
 	 * @param String
 	 * @return  int
 	 * @version 0.1
@@ -288,10 +369,61 @@ public class Utill {
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
 	 *   수정일         수정자           수정내용
-	 * 18.06.19	김진호               작성
+	 * 18.06.20	김진호               작성
 	*/
 	public void startSettingLog(){
 		
+	}
+	/**
+	 * 입력값의 위치를 찾아 빙고판 활성화
+	 * @param int
+	 * @return  int
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.20	김진호               작성
+	*/
+	public BoardVO search(int insertNumber ,BoardVO board){
+		int[][] tempBoard = board.getNumberboard();
+		boolean[][] tempCheckBoard = board.getCheckboard();
+		int x = 0;
+		int y = 0;
+		
+		for (int i = 0; i < tempBoard.length; i++) {
+			for (int j = 0; j < tempBoard.length; j++) {
+				if (tempBoard[i][j] == insertNumber) {
+					x=i; y=j;
+					tempCheckBoard[x][y] = true;
+				}
+			}
+		}
+		
+		return board;
+	}
+	/**
+	 * 지금까지의 입력값들 출력
+	 * @param int
+	 * @return  int
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.20	김진호               작성
+	*/
+	public void inserNumbersView(){
+		int[] insertNumber = manager.getChoiceNum();
+		int insercount = manager.getInsertcount();
+		
+		System.out.println("===========사용된 숫자 입니다 ===========");
+		for (int i = 0; i < insercount; i++) {
+			System.out.printf(" %3d ",insertNumber[i]);
+			if (insercount%5 ==0 && insercount !=0) {
+				System.out.println();
+			}
+		}
+
+		System.out.println("========================================");
 	}
 	
 }

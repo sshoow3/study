@@ -43,6 +43,9 @@ public class test001 {
 		(2) 메소드 : boolean c = Pattern.matches("^[ㄱ-ㅎ가-힣0-9]*$", "비교문자");
 		
 		 (?i) 대소문자 구분 안함
+		 
+		 특수문자 - http://dragoner.tistory.com/18
+		 var regExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
 		*/
 		String[] test = {"TEST" , "Test123" , "test" , "123","EN한글" ,"한글2019","!@#$%^" ," "};
 		
