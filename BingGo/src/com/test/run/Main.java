@@ -24,11 +24,12 @@ public class Main {
 	 * == 개정이력(Modification Information) ==
 	 *   수정일         수정자           수정내용
 	 * 18.06.19	김진호               작성
+	 * 18.06.21 김진호               코드 간략화 및 선택 옵션 추가
 	 */
 	public static void main(String[] args) {
 		System.out.println("안녕하세요 빙고게임판입니다.");
 		System.out.print("1.게임판 크기를 설정하세요(최소 4) : ");
-		int[] select = new int[10];
+		int[] select = new int[5];
 		String insertTemp = "";
 		Utill ut = new Utill();
 
@@ -79,10 +80,9 @@ public class Main {
 		;
 		// ----------------------------------------------------------
 		if (select[1] == 1) {
-			System.out.print("3.1인용 게임은 빙고가 랜덤으로 지급됩니다.");
+			System.out.println("3.1인용 게임은 빙고가 랜덤으로 지급됩니다.");
 			select[2] = 1;
 		} else {
-			select[2] = 0;
 			try {
 				System.out.print("3.빙고을 랜덤으로 받으시겠습니까? (1)Yes  (2)No 직접입력  : ");
 				insertTemp = sc.next();
@@ -128,10 +128,32 @@ public class Main {
 				check = false;
 			}
 		}
-		;
+		// ----------------------------------------------------------
+		select[4] = 0;
+		try {
+			System.out.println("5.빙고 완성 숫자 입력(최소1이상) :");
+			insertTemp = sc.next();
+			select[4] = ut.whileNumberInserting(insertTemp);
+			if (select[4]>0) {
+				check = false;
+			}
+		} catch (Exception e) {
+			check = true;
+		}
+		while (check) {
+			System.out.println("잘못입력하셨습니다.");
+			System.out.print("5.빙고 완성 숫자 입력(최소1이상) :");
+			insertTemp = sc.next();
+			select[4] = ut.whileNumberInserting(insertTemp);
+			if (select[4]>0) {
+				check = false;
+			}
+		}
 
 		MainBoard mb = new MainBoard(select);
 		System.out.println("게임을 시작합니다  .");
+		
+		mb.gamePlay(select);
 	}
 
 }

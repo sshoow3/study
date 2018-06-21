@@ -14,13 +14,15 @@ public class MainBoard {
 	
 	static BoardVO user;
 	static BoardVO cpu;
-//	static UserVO user;
-//	static CPUVO cpu;
+	
 	static Utill util;
 	static int[] insertNumber;
 	static Logger log = Logger.getLogger(MainBoard.class.getName());
 	
 	static int[] choiceNum = new int[500];
+	static int bingGo ;
+	static boolean winner = false;
+	static int max;
 	
 	/**
 	 * 게임 초기 셋팅값입력
@@ -47,6 +49,11 @@ public class MainBoard {
 		cpu.setNumberboard(util.startSetting(setting));
 		
 		if (setting[3] == 2) insertNumber = new int[setting[0] * setting[0] * 4]; else insertNumber = new int[setting[0] * setting[0]];
+		this.bingGo = setting[4];
+		if (setting[3] == 2)
+			this.max = (setting[0] * setting[0] * 4);
+		else
+			this.max = setting[0] * setting[0];
 	}
 	
 	/**
@@ -62,38 +69,35 @@ public class MainBoard {
 	 * 3 vs수동 - 숫자를 보여주고 체크한부분 표기
 	*/
 	public void gamePlay(int[] setting){
-		boolean gameEnd = false;
 		Scanner sc = new Scanner(System.in);
-		while (!gameEnd) {
+		while (!winner) {
+			int insert = 0;
+			boolean insertNumberCheck = false;
 			
-			boolean insertNumber = false;
-			while (!insertNumber) {
+			do {
 				util.inserNumbersView();
 				if (setting[2]==1) util.randomPlayingView(user);
 				else util.insertPlayingView(user);
-				
-				
-				
 				System.out.print("숫자를 입력하세요");
 				String insertTemp = sc.next();
-				int insert = util.whileNumberInserting(insertTemp);
-				if (util.insertArea(insert)) {
-					insertNumber = util.insertCheck(insert);
-				}
-				
-			}
+				insert = util.whileNumberInserting(insertTemp);
+				insertNumberCheck = util.insertArea(insert);
+				insertNumberCheck = util.insertCheck(insert);
+			} while (!insertNumberCheck);
+			
 			// 게임 
 			if (setting[0]==1) {
 				//1인
+				singGame(insert);
 			}else {
 				//cpu
 				if (setting[2]==1) {
 					//랜덤게임
+					vsCPURGame(insert);
 				}else {
 					//수동입력 게임
 				}
 			}
-			//게임 end 체크
 		}
 		
 	}
@@ -106,11 +110,18 @@ public class MainBoard {
 	 *   수정일         수정자           수정내용
 	 * 18.06.20	김진호               작성
 	*/
-	public void singGame(){
+	public void singGame(int num){
 		// 입력값 중복여부 체크
-		// 위치탐색 반영
-		// 빙고 여부체크
-		// 게임승리 여부
+		boolean check = util.insertCheck(num);
+		if (check) {
+			// 위치탐색 반영
+			util.insertChecking(num, user);
+			
+			// 게임승리 여부
+			winner = gameResult(user);
+		}else {
+			log.info("이미 입력하신 번호 입니다.");
+		}
 	}
 	/**
 	 * 게임 play
@@ -121,12 +132,51 @@ public class MainBoard {
 	 *   수정일         수정자           수정내용
 	 * 18.06.20	김진호               작성
 	*/
-	public void vsCPURGame(){
+	public void vsCPURGame(int num){
 		// 입력값 중복여부 체크
+		boolean userBingGo = false;
+		boolean cpuBingGo = false;
+		
+		
 		// 위치탐색 반영
+		util.insertChecking(num, user);
 		// 빙고 여부체크
-		// 
+		userBingGo = gameResult(user);
+		// 위치탐색 반영
+		util.insertChecking(num, cpu);
+		// 빙고 여부체크
+		cpuBingGo = gameResult(cpu);
 		// 게임승리 여부
+		if (cpuBingGo && !userBingGo) {
+			System.out.println("컴퓨터 승리!!");
+		}else if (!cpuBingGo && userBingGo) {
+			System.out.println("사용자 승리!!");
+		}else {
+			// 컴퓨터  턴
+			boolean insertNumberCheck = true;
+			do {
+				num = ((int) Math.random()* max)+1 ;
+				insertNumberCheck = util.insertArea(num);
+				insertNumberCheck = util.insertCheck(num);
+			} while (!cpuBingGo);
+
+
+			util.insertChecking(num, user);
+			// 빙고 여부체크
+			userBingGo = gameResult(user);
+			// 위치탐색 반영
+			util.insertChecking(num, cpu);
+			// 빙고 여부체크
+			cpuBingGo = gameResult(cpu);
+			// 게임승리 여부
+			if (cpuBingGo && !userBingGo) {
+				System.out.println("컴퓨터 승리!!");
+			}else if (!cpuBingGo && userBingGo) {
+				System.out.println("사용자 승리!!");
+			}
+		}
+			
+		
 	}
 	/**
 	 * 게임 결과 확인
@@ -135,10 +185,16 @@ public class MainBoard {
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
 	 *   수정일         수정자           수정내용
-	 * 18.06.20	김진호               작성
+	 * 18.06.21	김진호               작성
 	*/
-	public boolean gameResult(){
+	public boolean gameResult(BoardVO vo){
 		boolean result = false;
+		
+		int count = util.bingGoALLCount(vo);
+		
+		if (count >= bingGo) {
+			result = true;
+		}
 		
 		return result;
 	}

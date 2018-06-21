@@ -1,5 +1,6 @@
 package com.test.util;
 
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -12,22 +13,26 @@ import com.test.board.ManagerVO;
  */
 public class Utill {
 	static int max;
+	static int boardsize;
+	static int bingGo;
+	
 	static Logger log = Logger.getLogger(Utill.class.getName());
 	static ManagerVO manager = new ManagerVO();
 
 	/**
 	 * 호출시 셋팅값입력 - 초기셋팅시 필요<br>
 	 * param int[3]<br>
-	 * [0] 빙고판 크기
-	 * [1] 게임유형<br>
-	 * [2] 랜덤여부
-	 * [3] 난이도<br>
+	 * [0] 빙고판 크기 4 이상
+	 * [1] 게임유형 1 인용 2cpu<br>
+	 * [2] 랜덤여부 1random 2 수동
+	 * [3] 난이도 1easy 2hard<br>
+	 * [4] 빙고 갯수 1이상
 	 * @param int[]
 	 * @version 0.1
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
 	 *   수정일         수정자           수정내용
-	 * 18.06.19	김진호               작성
+	 * 18.06.21	김진호               주석 수정 및 보드크기,빙고숫자 추가
 	*/
 	public Utill(int[] setting) {
 		if (setting[3] == 2)
@@ -35,6 +40,9 @@ public class Utill {
 		else
 			this.max = setting[0] * setting[0];
 		// log.info(setting[3] + ": " + max);
+		
+		this.boardsize = setting[0];
+		this.bingGo = setting[4];
 	}
 
 	/**
@@ -52,7 +60,7 @@ public class Utill {
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
 	 *   수정일         수정자           수정내용
-	 * 18.06.19	김진호               작성
+	 * 18.06.21	김진호               랜덤제작 수정
 	 */
 	public int[][] startSetting(int[] setting) {
 		Scanner sc = new Scanner(System.in);
@@ -60,54 +68,54 @@ public class Utill {
 
 		ManagerVO numberchking = new ManagerVO();
 		numberchking.setChoiceNum(new int[setting[0] * setting[0] * 4]);
-		numberchking.setInsertcount(0);
+		int[] inserNumbers = new int[500];
+		int insertcount = 0;
+		numberchking.setInsertcount(insertcount);
+		
+		for (int i = 0; i < setting.length; i++) {
+			System.out.println(setting[i]);
+		}
 
 		int randomNum = 1;
 		if (setting[2] == 1) {
 			numberchking.setSwich("랜덤제작");
 			for (int i = 0; i < firstboard.length; i++) {
 				for (int j = 0; j < firstboard.length; j++) {
+					do {
+						randomNum = ((int) (Math.random() * max) + 1);
+						numberchking.setInsertNum(randomNum);
+					} while (!insertCheck(numberchking));
+					inserNumbers[insertcount] = randomNum;
+					numberchking.setChoiceNum(inserNumbers);
+					numberchking.setInsertcount(++insertcount);
 					firstboard[i][j] = randomNum;
-					if (setting[3] == 2)
-						randomNum = (randomNum + (int) (Math.random() * 3) + 1);
-					else
-						randomNum++;
 				}
 			}
+//			테스트용 뷰
+			boardInsertview(firstboard);
 		} else {
 
-			if (setting[1] == 1) {
-				for (int i = 0; i < firstboard.length; i++) {
-					for (int j = 0; j < firstboard.length; j++) {
+			for (int i = 0; i < firstboard.length; i++) {
+				for (int j = 0; j < firstboard.length; j++) {
+					
+					boolean areaCheck = false;
 
-						boolean check = false;
-						int num = 0;
-						while (!check) {
-							boardInsertview(firstboard);
-							System.out.print("번호를 입력하세요 : ");
-							try {
-								String temp;
-								temp = sc.next();
-								boolean numcheck = insertEditCheck(temp);
-								if (numcheck) {
-									num = Integer.parseInt(temp);
-									check = insertArea(num);
-									if (check) {
-										check = insertCheck(numberchking);
-									}
-								}
-							} catch (Exception e) {
-								log.info(e.toString());
-								log.info("잘못입력하셧습니다.");
-								num = 0;
-							}
+					int num = 0;
+					String temp;
 
-						}
-						firstboard[i][j] = num;
-					}
+//					테스트용 뷰
+					boardInsertview(firstboard);
+					
+					do {
+						System.out.print("번호를 입력하세요 : ");
+						temp = sc.next();
+						num = whileNumberInserting(temp);
+						areaCheck = insertArea(num);
+					} while (!areaCheck);
+					
+					
+					firstboard[i][j] = num;
 				}
-			} else {
-
 			}
 
 		}
@@ -248,8 +256,7 @@ public class Utill {
 			}
 		}
 
-		if (!check)log.info("이미 입력하신 번호 입니다.");
-		else {
+		if (check){
 			insertNumbers[insertcount] = insert;
 			insertcount++;
 			manager.setChoiceNum(insertNumbers);
@@ -377,7 +384,7 @@ public class Utill {
 	/**
 	 * 입력값의 위치를 찾아 빙고판 활성화
 	 * @param int
-	 * @return  int
+	 * @return  BoardVO
 	 * @version 0.1
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
@@ -404,7 +411,6 @@ public class Utill {
 	/**
 	 * 지금까지의 입력값들 출력
 	 * @param int
-	 * @return  int
 	 * @version 0.1
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
@@ -414,6 +420,17 @@ public class Utill {
 	public void inserNumbersView(){
 		int[] insertNumber = manager.getChoiceNum();
 		int insercount = manager.getInsertcount();
+		int [] numberSort = new int[insercount];
+		
+		for (int i = 0; i < insercount; i++) {
+			numberSort[i] = insertNumber[i] ;
+		}
+		
+		Arrays.sort(numberSort);
+		
+		for (int i = 0; i < insercount; i++) {
+			insertNumber[i] = numberSort[i] ;
+		}
 		
 		System.out.println("===========사용된 숫자 입니다 ===========");
 		for (int i = 0; i < insercount; i++) {
@@ -425,5 +442,125 @@ public class Utill {
 
 		System.out.println("========================================");
 	}
+	
+	/**
+	 * 빙고갯수 출력
+	 * @param BoardVO
+	 * @return  int
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.21	김진호               작성
+	*/
+	public int bingGoALLCount(BoardVO boVo){
+		int result = 0;
+		
+		for (int i = 0; i < boardsize; i++) {
+			result += xLineCount(boVo.getCheckboard(), i);
+			result += yLineCount(boVo.getCheckboard(), i);
+		}
+		result += xyLineCount(boVo.getCheckboard(), 1);
+		result += xyLineCount(boVo.getCheckboard(), 2);
+		
+		return result;
+	}
+	
+	/**
+	 * 가로 체크 수
+	 * @param boolean[][] , int
+	 * @return  int
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.21	김진호               작성
+	*/
+	public int xLineCount(boolean[][] board , int line){
+		int result = 0;
+		
+		for (int i = 0; i < board.length; i++) {
+			if (board[line][i] == true) {
+				result++;
+			}
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * 세로 체크 수
+	 * @param boolean[][] , int
+	 * @return  int
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.21	김진호               작성
+	*/
+	public int yLineCount(boolean[][] board , int line){
+		int result = 0;
+		for (int i = 0; i < board.length; i++) {
+			if (board[i][line]) {
+				result++;
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * 대각선 체크 수 뒤의 int 1인경우 /대각선 2일경우 역방향
+	 * @param boolean[][] , int
+	 * @return  int
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.20	김진호               작성
+	*/
+	public int xyLineCount(boolean[][] board , int line){
+		int result = 0;
+		if (line==1) {
+			for (int i = 0; i < board.length; i++) {
+				if (board[i][i]) {
+					result++;
+				}
+			}
+		}else {
+			for (int i = 0; i < board.length; i++) {
+				if (board[boardsize-i-1][i]) {
+					result++;
+				}
+			}
+		}
+		return result;
+	}
+	/**
+	 * 입력값 확인 후 활성화
+	 * @param boolean[][] , int
+	 * @return  int
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.21	김진호               작성
+	*/
+	public BoardVO insertChecking(int number ,BoardVO boVo){
+		
+		int[][] board = boVo.getNumberboard();
+		boolean[][] checkboard = boVo.getCheckboard();
+		
+		for (int i = 0; i < checkboard.length; i++) {
+			for (int j = 0; j < checkboard.length; j++) {
+				if (board[i][j] == number) {
+					checkboard [i][j] = true;
+				}
+			}
+		}
+		
+		return boVo;
+	}
+	
+	
 	
 }
