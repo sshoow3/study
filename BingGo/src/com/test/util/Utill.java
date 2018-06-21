@@ -558,6 +558,7 @@ public class Utill {
 			for (int j = 0; j < checkboard.length; j++) {
 				if (board[i][j] == number) {
 					checkboard [i][j] = true;
+					System.out.println("변한위치"+i + " : " + j);
 				}
 			}
 		}

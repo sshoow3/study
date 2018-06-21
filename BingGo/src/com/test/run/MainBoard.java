@@ -78,7 +78,7 @@ public class MainBoard {
 				util.inserNumbersView();
 				if (setting[2]==1) util.randomPlayingView(user);
 				else util.insertPlayingView(user);
-				System.out.print("숫자를 입력하세요");
+				System.out.print("숫자를 입력하세요  : ");
 				String insertTemp = sc.next();
 				insert = util.whileNumberInserting(insertTemp);
 				insertNumberCheck = util.insertArea(insert);
@@ -99,6 +99,9 @@ public class MainBoard {
 				}
 			}
 		}
+		System.out.println("=======================================");
+		System.out.println("================게임끝==============");
+		System.out.println("=======================================");
 		
 	}
 	/**
@@ -115,7 +118,7 @@ public class MainBoard {
 		boolean check = util.insertCheck(num);
 		if (check) {
 			// 위치탐색 반영
-			util.insertChecking(num, user);
+			user = util.insertChecking(num, user);
 			
 			// 게임승리 여부
 			winner = gameResult(user);
@@ -194,6 +197,8 @@ public class MainBoard {
 		
 		if (count >= bingGo) {
 			result = true;
+		}else {
+			System.out.println(count + " : " + bingGo);
 		}
 		
 		return result;
