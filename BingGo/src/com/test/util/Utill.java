@@ -439,12 +439,12 @@ public class Utill {
 		System.out.println("===========사용된 숫자 입니다 ===========");
 		for (int i = 0; i < insercount; i++) {
 			System.out.printf(" %3d ",insertNumber[i]);
-			if (insercount%5 ==0 && insercount !=0) {
+			if ((i+1)%5 ==0 && i !=0) {
 				System.out.println();
 			}
 		}
 
-		System.out.println("========================================");
+		System.out.println("\n========================================");
 	}
 	
 	/**
