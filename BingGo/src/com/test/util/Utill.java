@@ -72,12 +72,13 @@ public class Utill {
 		int insertcount = 0;
 		numberchking.setInsertcount(insertcount);
 		
-		for (int i = 0; i < setting.length; i++) {
+		/*for (int i = 0; i < setting.length; i++) {
 			System.out.println(setting[i]);
-		}
+		}*/
 
 		int randomNum = 1;
 		if (setting[2] == 1) {
+//			System.out.println("랜덤제작");
 			numberchking.setSwich("랜덤제작");
 			for (int i = 0; i < firstboard.length; i++) {
 				for (int j = 0; j < firstboard.length; j++) {
@@ -92,7 +93,7 @@ public class Utill {
 				}
 			}
 //			테스트용 뷰
-			boardInsertview(firstboard);
+//			boardInsertview(firstboard);
 		} else {
 
 			for (int i = 0; i < firstboard.length; i++) {
@@ -224,9 +225,12 @@ public class Utill {
 				break;
 			}
 		}
-
-		if (!check && isertVO.getSwich().equals("랜덤제작"))
+		if (!check && !isertVO.getSwich().equals("랜덤제작"))
+		{
+//			System.out.println(!check + " : " +isertVO.getSwich() + " : " +isertVO.getSwich().equals("랜덤제작"));
 			log.info("이미 입력하신 번호 입니다.");
+		}
+			
 		;
 
 		return check;
