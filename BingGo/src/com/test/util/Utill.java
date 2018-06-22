@@ -1,10 +1,13 @@
 package com.test.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import com.test.board.AIVO;
 import com.test.board.BoardVO;
 import com.test.board.ManagerVO;
 
@@ -15,47 +18,47 @@ public class Utill {
 	static int max;
 	static int boardsize;
 	static int bingGo;
-	
+
 	static Logger log = Logger.getLogger(Utill.class.getName());
 	static ManagerVO manager = new ManagerVO();
 
 	/**
 	 * 호출시 셋팅값입력 - 초기셋팅시 필요<br>
 	 * param int[3]<br>
-	 * [0] 빙고판 크기 4 이상
-	 * [1] 게임유형 1 인용 2cpu<br>
-	 * [2] 랜덤여부 1random 2 수동
-	 * [3] 난이도 1easy 2hard<br>
+	 * [0] 빙고판 크기 4 이상 [1] 게임유형 1 인용 2cpu<br>
+	 * [2] 랜덤여부 1random 2 수동 [3] 난이도 1easy 2hard<br>
 	 * [4] 빙고 갯수 1이상
+	 * 
 	 * @param int[]
 	 * @version 0.1
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
 	 *   수정일         수정자           수정내용
 	 * 18.06.21	김진호               주석 수정 및 보드크기,빙고숫자 추가
-	*/
+	 */
 	public Utill(int[] setting) {
 		if (setting[3] == 2)
 			this.max = (setting[0] * setting[0] * 4);
 		else
 			this.max = setting[0] * setting[0];
 		// log.info(setting[3] + ": " + max);
-		
+
 		this.boardsize = setting[0];
 		this.bingGo = setting[4];
 	}
 
 	/**
 	 * 다른 메소드 호출용
-	*/
+	 */
 	public Utill() {
 	}
 
 	/**
 	 * 빙고판 초기값 설정<br>
 	 * Parameters: 1. int 게임판크기 , 2.int 랜덤여부 , 3 int 난이도
+	 * 
 	 * @param int[][]
-	 * @return  int[][]
+	 * @return int[][]
 	 * @version 0.2
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
@@ -71,14 +74,15 @@ public class Utill {
 		int[] inserNumbers = new int[500];
 		int insertcount = 0;
 		numberchking.setInsertcount(insertcount);
-		
-		/*for (int i = 0; i < setting.length; i++) {
-			System.out.println(setting[i]);
-		}*/
+
+		/*
+		 * for (int i = 0; i < setting.length; i++) {
+		 * System.out.println(setting[i]); }
+		 */
 
 		int randomNum = 1;
 		if (setting[2] == 1) {
-//			System.out.println("랜덤제작");
+			// System.out.println("랜덤제작");
 			numberchking.setSwich("랜덤제작");
 			for (int i = 0; i < firstboard.length; i++) {
 				for (int j = 0; j < firstboard.length; j++) {
@@ -92,29 +96,28 @@ public class Utill {
 					firstboard[i][j] = randomNum;
 				}
 			}
-//			테스트용 뷰
-//			boardInsertview(firstboard);
+			// 테스트용 뷰
+			// boardInsertview(firstboard);
 		} else {
 
 			for (int i = 0; i < firstboard.length; i++) {
 				for (int j = 0; j < firstboard.length; j++) {
-					
+
 					boolean areaCheck = false;
 
 					int num = 0;
 					String temp;
 
-//					테스트용 뷰
+					// 테스트용 뷰
 					boardInsertview(firstboard);
-					
+
 					do {
 						System.out.print("번호를 입력하세요 : ");
 						temp = sc.next();
 						num = whileNumberInserting(temp);
 						areaCheck = insertArea(num);
 					} while (!areaCheck);
-					
-					
+
 					firstboard[i][j] = num;
 				}
 			}
@@ -126,8 +129,9 @@ public class Utill {
 
 	/**
 	 * 체크보드 초기셋팅
+	 * 
 	 * @param int
-	 * @return  boolean[][]
+	 * @return boolean[][]
 	 * @version 0.1
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
@@ -147,6 +151,7 @@ public class Utill {
 
 	/**
 	 * 보드 출력 화면 - 입력화면
+	 * 
 	 * @param int[][]
 	 * @version 0.1
 	 * @see <pre>
@@ -162,43 +167,50 @@ public class Utill {
 			System.out.println();
 		}
 	}
+
 	/**
 	 * 게임화면 출력 - 랜덤게임용
+	 * 
 	 * @param int[][]
 	 * @version 0.1
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
 	 *   수정일         수정자           수정내용
 	 * 18.06.20	김진호               작성
-	*/
-	public static void randomPlayingView(BoardVO board){
+	 */
+	public static void randomPlayingView(BoardVO board) {
 		int[][] numberBoard = board.getNumberboard();
 		boolean[][] checkBoard = board.getCheckboard();
 		for (int i = 0; i < checkBoard.length; i++) {
 			for (int j = 0; j < checkBoard.length; j++) {
-					if (checkBoard[i][j]) System.out.printf(" %3s ","O") ;
-					else System.out.printf(" %3s ","X");
+				if (checkBoard[i][j])
+					System.out.printf(" %3s ", "O");
+				else
+					System.out.printf(" %3s ", "X");
 			}
 			System.out.println();
 		}
 	}
-	
+
 	/**
-	 *  게임화면 출력 - 수동입력용
+	 * 게임화면 출력 - 수동입력용
+	 * 
 	 * @param int[][]
 	 * @version 0.1
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
 	 *   수정일         수정자           수정내용
 	 * 18.06.20	김진호               작성
-	*/
-	public static void insertPlayingView(BoardVO board){
+	 */
+	public static void insertPlayingView(BoardVO board) {
 		int[][] numberBoard = board.getNumberboard();
 		boolean[][] checkBoard = board.getCheckboard();
 		for (int i = 0; i < checkBoard.length; i++) {
 			for (int j = 0; j < checkBoard.length; j++) {
-					if (checkBoard[i][j]) System.out.printf(" %3d ", numberBoard[i][j]) ;
-					else System.out.printf(" %3s ","O");
+				if (!checkBoard[i][j])
+					System.out.printf(" %3d ", numberBoard[i][j]);
+				else
+					System.out.printf(" %3s ", "O");
 			}
 			System.out.println();
 		}
@@ -207,8 +219,9 @@ public class Utill {
 	/**
 	 * 입력 중복여부 체크 - 초기값 설정용<br>
 	 * 이전에 이미 입력했는지 여부 체크
+	 * 
 	 * @param int[] , int
-	 * @return  boolean
+	 * @return boolean
 	 * @version 0.2
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
@@ -218,29 +231,30 @@ public class Utill {
 	public boolean insertCheck(ManagerVO isertVO) {
 		boolean check = true;
 		int[] insertNumbers = isertVO.getChoiceNum();
-		
+
 		for (int i = 0; i < isertVO.getInsertcount(); i++) {
-			if (insertNumbers[i] ==  isertVO.getInsertNum() ) {
+			if (insertNumbers[i] == isertVO.getInsertNum()) {
 				check = false;
 				break;
 			}
 		}
-		if (!check && !isertVO.getSwich().equals("랜덤제작"))
-		{
-//			System.out.println(!check + " : " +isertVO.getSwich() + " : " +isertVO.getSwich().equals("랜덤제작"));
+		if (!check && !isertVO.getSwich().equals("랜덤제작")) {
+			// System.out.println(!check + " : " +isertVO.getSwich() + " : "
+			// +isertVO.getSwich().equals("랜덤제작"));
 			log.info("이미 입력하신 번호 입니다.");
 		}
-			
+
 		;
 
 		return check;
 	}
-	
+
 	/**
 	 * 입력 중복여부 체크 - 게임용<br>
 	 * 이전에 이미 입력했는지 여부 체크
+	 * 
 	 * @param int
-	 * @return  boolean
+	 * @return boolean
 	 * @version 0.2
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
@@ -251,7 +265,6 @@ public class Utill {
 		boolean check = true;
 		int insertNumbers[] = manager.getChoiceNum();
 		int insertcount = manager.getInsertcount();
-		
 
 		for (int i = 0; i < insertcount; i++) {
 			if (insertNumbers[i] == insert) {
@@ -260,7 +273,7 @@ public class Utill {
 			}
 		}
 
-		if (check){
+		if (check) {
 			insertNumbers[insertcount] = insert;
 			insertcount++;
 			manager.setChoiceNum(insertNumbers);
@@ -272,8 +285,9 @@ public class Utill {
 
 	/**
 	 * 숫자범위 체크
+	 * 
 	 * @param int
-	 * @return  boolean
+	 * @return boolean
 	 * @version 0.1
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
@@ -297,8 +311,9 @@ public class Utill {
 	 * return boolean <br>
 	 * <br>
 	 * 참고 자료 : http://superfelix.tistory.com/70
+	 * 
 	 * @param String
-	 * @return  boolean
+	 * @return boolean
 	 * @version 0.1
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
@@ -331,14 +346,15 @@ public class Utill {
 
 	/**
 	 * 입력값이 숫자인지 여부 체크 후 숫자일때까지 반복
+	 * 
 	 * @param String
-	 * @return  int
+	 * @return int
 	 * @version 0.1
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
 	 *   수정일         수정자           수정내용
 	 * 18.06.19	김진호               작성
-	*/
+	 */
 	public int whileNumberInserting(String insert) {
 		int result = 0;
 		Scanner sc = new Scanner(System.in);
@@ -357,152 +373,178 @@ public class Utill {
 		return result;
 
 	}
-	
+
 	/**
-	 * 게임 플레이 중 기록 파일저장 - 작성예정 
+	 * 게임 플레이 중 기록 파일저장 - 작성예정
+	 * 
 	 * @param String
-	 * @return  int
+	 * @return int
 	 * @version 0.1
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
 	 *   수정일         수정자           수정내용
 	 * 18.06.19	김진호               작성
-	*/
-	public void logFileText(){
-//		
+	 */
+	public void logFileText() {
+		//
 	}
-	
+
 	/**
 	 * 게임 시작시 환경설정 기록 파일저장 - 작성예정
+	 * 
 	 * @param String
-	 * @return  int
+	 * @return int
 	 * @version 0.1
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
 	 *   수정일         수정자           수정내용
 	 * 18.06.20	김진호               작성
-	*/
-	public void startSettingLog(){
-		
+	 */
+	public void startSettingLog() {
+
 	}
+
 	/**
 	 * 입력값의 위치를 찾아 빙고판 활성화
+	 * 
 	 * @param int
-	 * @return  BoardVO
+	 * @return BoardVO
 	 * @version 0.1
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
 	 *   수정일         수정자           수정내용
 	 * 18.06.20	김진호               작성
-	*/
-	public BoardVO search(int insertNumber ,BoardVO board){
+	 */
+	public BoardVO search(int insertNumber, BoardVO board) {
 		int[][] tempBoard = board.getNumberboard();
 		boolean[][] tempCheckBoard = board.getCheckboard();
 		int x = 0;
 		int y = 0;
-		
+
 		for (int i = 0; i < tempBoard.length; i++) {
 			for (int j = 0; j < tempBoard.length; j++) {
 				if (tempBoard[i][j] == insertNumber) {
-					x=i; y=j;
+					x = i;
+					y = j;
 					tempCheckBoard[x][y] = true;
 				}
 			}
 		}
-		
+
 		return board;
 	}
+
 	/**
 	 * 지금까지의 입력값들 출력
+	 * 
 	 * @param int
 	 * @version 0.1
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
 	 *   수정일         수정자           수정내용
 	 * 18.06.20	김진호               작성
-	*/
-	public void inserNumbersView(){
+	 */
+	public void inserNumbersView() {
 		int[] insertNumber = manager.getChoiceNum();
 		int insercount = manager.getInsertcount();
-		int [] numberSort = new int[insercount];
-		
+		int[] numberSort = new int[insercount];
+
 		for (int i = 0; i < insercount; i++) {
-			numberSort[i] = insertNumber[i] ;
+			numberSort[i] = insertNumber[i];
 		}
-		
+
 		Arrays.sort(numberSort);
-		
+
 		for (int i = 0; i < insercount; i++) {
-			insertNumber[i] = numberSort[i] ;
+			insertNumber[i] = numberSort[i];
 		}
-		
+
 		System.out.println("===========사용된 숫자 입니다 ===========");
 		for (int i = 0; i < insercount; i++) {
-			System.out.printf(" %3d ",insertNumber[i]);
-			if ((i+1)%5 ==0 && i !=0) {
+			System.out.printf(" %3d ", insertNumber[i]);
+			if ((i + 1) % 5 == 0 && i != 0 && (i + 1 != insercount)) {
 				System.out.println();
 			}
 		}
 
 		System.out.println("\n========================================");
 	}
-	
+
 	/**
 	 * 빙고갯수 출력
+	 * 
 	 * @param BoardVO
-	 * @return  int
+	 * @return int
 	 * @version 0.1
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
 	 *   수정일         수정자           수정내용
 	 * 18.06.21	김진호               작성
-	*/
-	public int bingGoALLCount(BoardVO boVo){
+	 */
+	public int bingGoALLCount(BoardVO boVo) {
 		int result = 0;
-		
+		int count = 0;
+
 		for (int i = 0; i < boardsize; i++) {
-			result += xLineCount(boVo.getCheckboard(), i);
-			result += yLineCount(boVo.getCheckboard(), i);
+			count = xLineCount(boVo.getCheckboard(), i);
+			if (count == boardsize) {
+				result++;
+				// log.info(count+ "== " +boardsize+ " >"+ result+"");
+			}
+			count = yLineCount(boVo.getCheckboard(), i);
+			if (count == boardsize) {
+				result++;
+				// log.info(count+ "== " +boardsize+ " >"+ result+"");
+			}
 		}
-		result += xyLineCount(boVo.getCheckboard(), 1);
-		result += xyLineCount(boVo.getCheckboard(), 2);
-		
+		count = xyLineCount(boVo.getCheckboard(), 1);
+		if (count == boardsize) {
+			result++;
+			// log.info(count+ "== " +boardsize+ " >"+ result+"");
+		}
+		count = xyLineCount(boVo.getCheckboard(), 2);
+		if (count == boardsize) {
+			result++;
+			// log.info(count+ "== " +boardsize+ " >"+ result+"");
+		}
 		return result;
 	}
-	
+
 	/**
 	 * 가로 체크 수
+	 * 
 	 * @param boolean[][] , int
-	 * @return  int
+	 * @return int
 	 * @version 0.1
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
 	 *   수정일         수정자           수정내용
 	 * 18.06.21	김진호               작성
-	*/
-	public int xLineCount(boolean[][] board , int line){
+	 */
+	public int xLineCount(boolean[][] board, int line) {
 		int result = 0;
-		
+
 		for (int i = 0; i < board.length; i++) {
 			if (board[line][i] == true) {
 				result++;
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * 세로 체크 수
+	 * 
 	 * @param boolean[][] , int
-	 * @return  int
+	 * @return int
 	 * @version 0.1
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
 	 *   수정일         수정자           수정내용
 	 * 18.06.21	김진호               작성
-	*/
-	public int yLineCount(boolean[][] board , int line){
+	 */
+	public int yLineCount(boolean[][] board, int line) {
 		int result = 0;
 		for (int i = 0; i < board.length; i++) {
 			if (board[i][line]) {
@@ -511,61 +553,288 @@ public class Utill {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * 대각선 체크 수 뒤의 int 1인경우 /대각선 2일경우 역방향
+	 * 
 	 * @param boolean[][] , int
-	 * @return  int
+	 * @return int
 	 * @version 0.1
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
 	 *   수정일         수정자           수정내용
 	 * 18.06.20	김진호               작성
-	*/
-	public int xyLineCount(boolean[][] board , int line){
+	 */
+	public int xyLineCount(boolean[][] board, int line) {
 		int result = 0;
-		if (line==1) {
+		if (line == 1) {
 			for (int i = 0; i < board.length; i++) {
 				if (board[i][i]) {
 					result++;
 				}
 			}
-		}else {
+		} else {
 			for (int i = 0; i < board.length; i++) {
-				if (board[boardsize-i-1][i]) {
+				if (board[boardsize - i - 1][i]) {
 					result++;
 				}
 			}
 		}
 		return result;
 	}
+
 	/**
 	 * 입력값 확인 후 활성화
+	 * 
 	 * @param boolean[][] , int
-	 * @return  int
+	 * @return int
 	 * @version 0.1
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
 	 *   수정일         수정자           수정내용
 	 * 18.06.21	김진호               작성
-	*/
-	public BoardVO insertChecking(int number ,BoardVO boVo){
-		
+	 */
+	public BoardVO insertChecking(int number, BoardVO boVo) {
+
 		int[][] board = boVo.getNumberboard();
 		boolean[][] checkboard = boVo.getCheckboard();
-		
+
 		for (int i = 0; i < checkboard.length; i++) {
 			for (int j = 0; j < checkboard.length; j++) {
 				if (board[i][j] == number) {
-					checkboard [i][j] = true;
-					System.out.println("변한위치"+i + " : " + j);
+					checkboard[i][j] = true;
+					// System.out.println("변한위치"+i + " : " + j);
 				}
 			}
 		}
-		
+
 		return boVo;
 	}
+
+	/**
+	 * AI 처리를 위한 라인 데이터
+	 * 
+	 * @param boardVO,String, int
+	 * @return AIVO
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.22	김진호               작성
+	 */
+	public AIVO lineDATA(BoardVO boardVO,String lineType, int line) {
+		AIVO aivo = new AIVO();
+
+		aivo.setLineType(lineType);
+		List<Integer> list = new ArrayList<Integer>();
+		int count = 0;
+		aivo.setLine(line);
+		
+		
+		switch (lineType) {
+		case "x":
+			for (int i = 0; i < boardsize; i++) {
+				if (boardVO.getCheckboard()[line][i]) {
+					count++;
+				}else {
+					list.add(i);
+				}
+			}
+
+			break;
+		case "y":
+			for (int i = 0; i < boardsize; i++) {
+				if (boardVO.getCheckboard()[i][line]) {
+					count++;
+				}else {
+					list.add(i);
+				}
+			}
+			break;
+		case "z":
+			if (line ==1) {
+				for (int i = 0; i < boardsize; i++) {
+					if (boardVO.getCheckboard()[i][i]) {
+						count++;
+					}else {
+						list.add(i);
+					}
+				}
+			}else if (line ==2) {
+				for (int i = 0; i < boardsize; i++) {
+					if (boardVO.getCheckboard()[boardsize-i-1][i]) {
+						count++;
+					}else {
+						list.add(i);
+					}
+				}
+			} 
+			break;
+
+		default:
+			break;
+		}
+		int[] arr = new int[list.size()];
+		
+		int i=0;
+		for (Integer e : list) {
+			arr[i++] = e.intValue();
+		}
+		
+		aivo.setFalseNumbers(arr);
+		aivo.setTrueCount(count);
+
+		return aivo;
+	}
 	
+	/**
+	 * AI 처리를 위한 해당 위치  빙고를 위한 체크값
+	 * 
+	 * @param Board, int , int
+	 * @return int
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.22	김진호               작성
+	 */
+	public int expectedCheck(BoardVO board,int x,int y){
+		int result = 0;
+		
+		result += xLineCount(board.getCheckboard(), x);
+		result += yLineCount(board.getCheckboard(), y);
+		
+		if (x == y) 
+			result += xyLineCount(board.getCheckboard(), 1);
+		else if (boardsize-y-1 == x) 
+			result += xyLineCount(board.getCheckboard(), 2);
+		
+		return result;
+	}
 	
+	/**
+	 * AI 처리를 위한 해당 위치 비교
+	 * - 한줄에서 false 인 부분 비교
+	 * @param Board, int , int
+	 * @return int
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.22	김진호               작성
+	 */
+	public int[] compare(BoardVO boardVO,AIVO aivo){
+		int max = 0;
+		int x = 0;
+		int y = 0;
+		int line = aivo.getLine();
+		
+		int[] intarr = aivo.getFalseNumbers();
+
+		for (int i = 0; i < intarr.length; i++) {
+			
+			switch (aivo.getLineType()) {
+			case "x":
+				if (max< expectedCheck(boardVO,line,intarr[i])) {
+					max = expectedCheck(boardVO,line,intarr[i]);
+					x = line;
+					y = intarr[i];
+				}
+				break;
+			case "y":
+				if (max< expectedCheck(boardVO,intarr[i],line)) {
+					max = expectedCheck(boardVO,intarr[i],line);
+					x = intarr[i];
+					y = line;
+				}
+				break;
+			case "z":
+				
+				if (line ==1) {
+					if (max< expectedCheck(boardVO,intarr[i],intarr[i])) {
+						max = expectedCheck(boardVO,intarr[i],intarr[i]);
+						x = intarr[i];
+						y = intarr[i];
+					}
+				}else if (line ==2) {
+					if (max< expectedCheck(boardVO,boardsize-intarr[i]-1,intarr[i])) {
+						max = expectedCheck(boardVO,boardsize-intarr[i]-1,intarr[i]);
+						x = boardsize-intarr[i]-1;
+						y = intarr[i];
+					}
+				}
+				
+				break;	
+			default:
+				break;
+			}
+		}
+		int [] result = {x,y,max};
+		return result;
+	}
+	/**
+	 * AI 처리를 위한 해당 위치 비교
+	 * - 라인 비교 count 최고 값 찾기
+	 * @param Board, int , int
+	 * @return int
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.22	김진호               작성
+	 */
+	public int[] lineMax(BoardVO boardVO){
+		
+		ArrayList<AIVO> temp = new ArrayList<AIVO>();
+		int[] result = {0,0,0};
+		AIVO aivo = new AIVO();
+		int max = 0;
+		Common common = new Common(boardsize);
+		
+		for (int i = 0; i < boardsize; i++) {
+			aivo = lineDATA(boardVO,"x",i);
+			max = common.max(max, aivo.getTrueCount());
+			temp.add(aivo);
+		}
+		for (int i = 0; i < boardsize; i++) {
+			aivo = lineDATA(boardVO,"y",i);
+			max = common.max(max, aivo.getTrueCount());
+			temp.add(aivo);
+		}
+		aivo = lineDATA(boardVO,"z",1);
+		max = common.max(max, aivo.getTrueCount());
+		temp.add(aivo);
+		aivo = lineDATA(boardVO,"z",2);
+		max = common.max(max, aivo.getTrueCount());
+		temp.add(aivo);
+		
+		for (int i = 0; i < temp.size(); i++) {
+			aivo = temp.get(i);
+			if (aivo.getTrueCount() == max) {
+				int[] tempArr = compare(boardVO, aivo);
+				if (tempArr[2]>result[2]) {
+					result = tempArr;
+				}
+			}
+		}
+		return result;
+	}
 	
+	/**
+	 * AI 가 입력하는 위치의 숫자 찾기
+	 * - 라인 비교 count 최고 값 찾기
+	 * @param BoardVO, int , int 
+	 * @return int
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.22	김진호               작성
+	 */
+	public int cpuInsertFind(BoardVO boardVO ,int x , int y){
+		int result =boardVO.getNumberboard()[x][y];
+		
+		return result;
+	}
+
 }

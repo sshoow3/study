@@ -131,7 +131,7 @@ public class Main {
 		// ----------------------------------------------------------
 		select[4] = 0;
 		try {
-			System.out.println("5.빙고 완성 숫자 입력(최소1이상) :");
+			System.out.print("5.빙고 완성 숫자 입력(최소1이상) :");
 			insertTemp = sc.next();
 			select[4] = ut.whileNumberInserting(insertTemp);
 			if (select[4]>0) {

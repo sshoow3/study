@@ -76,20 +76,23 @@ public class MainBoard {
 			
 			do {
 				util.inserNumbersView();
-				if (setting[2]==1) util.randomPlayingView(user);
-				else util.insertPlayingView(user);
+//				if (setting[2]==1) util.randomPlayingView(user);
+//				else util.insertPlayingView(user);
+				util.insertPlayingView(user);
 				System.out.print("숫자를 입력하세요  : ");
 				String insertTemp = sc.next();
 				insert = util.whileNumberInserting(insertTemp);
 				insertNumberCheck = util.insertArea(insert);
-				insertNumberCheck = util.insertCheck(insert);
+				if (insertNumberCheck) {
+					insertNumberCheck = util.insertCheck(insert);
+				}
 			} while (!insertNumberCheck);
 			
 			// 게임 
-			if (setting[0]==1) {
+			if (setting[1]==1) {
 				//1인
 				singGame(insert);
-			}else {
+			}else if(setting[1]==2){
 				//cpu
 				if (setting[2]==1) {
 					//랜덤게임
@@ -114,17 +117,11 @@ public class MainBoard {
 	 * 18.06.20	김진호               작성
 	*/
 	public void singGame(int num){
-		// 입력값 중복여부 체크
-		boolean check = util.insertCheck(num);
-		if (check) {
-			// 위치탐색 반영
-			user = util.insertChecking(num, user);
-			
-			// 게임승리 여부
-			winner = gameResult(user);
-		}else {
-			log.info("이미 입력하신 번호 입니다.");
-		}
+		// 위치탐색 반영
+		user = util.insertChecking(num, user);
+		
+		// 게임승리 여부
+		winner = gameResult(user);
 	}
 	/**
 	 * 게임 play
@@ -136,17 +133,14 @@ public class MainBoard {
 	 * 18.06.20	김진호               작성
 	*/
 	public void vsCPURGame(int num){
-		// 입력값 중복여부 체크
 		boolean userBingGo = false;
 		boolean cpuBingGo = false;
-		
-		
 		// 위치탐색 반영
-		util.insertChecking(num, user);
+		user = util.insertChecking(num, user);
 		// 빙고 여부체크
 		userBingGo = gameResult(user);
 		// 위치탐색 반영
-		util.insertChecking(num, cpu);
+		cpu = util.insertChecking(num, cpu);
 		// 빙고 여부체크
 		cpuBingGo = gameResult(cpu);
 		// 게임승리 여부
@@ -158,25 +152,54 @@ public class MainBoard {
 			// 컴퓨터  턴
 			boolean insertNumberCheck = true;
 			do {
-				num = ((int) Math.random()* max)+1 ;
+				/*2018.06.22 변경
+				num = ((int) (Math.random() * max))+1 ;
+//				log.info(num +" 반벅여부 측정?" + max);
 				insertNumberCheck = util.insertArea(num);
+				if (insertNumberCheck) {
+//					log.info(insertNumberCheck +"범위 반벅여부 측정?");
+					insertNumberCheck = util.insertCheck(num);
+//					log.info(insertNumberCheck +"중복여부 반벅여부 측정?");
+				}*/
+				int[] cpuInser = util.lineMax(cpu);
+				num = util.cpuInsertFind(cpu, cpuInser[0], cpuInser[1]);
 				insertNumberCheck = util.insertCheck(num);
-			} while (!cpuBingGo);
+			} while (!insertNumberCheck);
 
 
 			util.insertChecking(num, user);
 			// 빙고 여부체크
 			userBingGo = gameResult(user);
 			// 위치탐색 반영
-			util.insertChecking(num, cpu);
+			cpu = util.insertChecking(num, cpu);
 			// 빙고 여부체크
 			cpuBingGo = gameResult(cpu);
 			// 게임승리 여부
-			if (cpuBingGo && !userBingGo) {
+			if (userBingGo || cpuBingGo) {
+				log.info("승리조건 충족");
+				if(util.bingGoALLCount(user) > util.bingGoALLCount(cpu)){
+					System.out.println("사용자 승리!!");
+					winner =true;
+				}else if (util.bingGoALLCount(user) < util.bingGoALLCount(cpu)) {
+					System.out.println("컴퓨터 승리!!");
+					winner =true;
+				}else if (util.bingGoALLCount(user) == util.bingGoALLCount(cpu)) {
+					System.out.println("빙고수가 같습니다. 먼저 더 많은 빙고수를 얻으시면 승리입니다.");
+				}
+			}
+			/*if (cpuBingGo && !userBingGo) {
 				System.out.println("컴퓨터 승리!!");
 			}else if (!cpuBingGo && userBingGo) {
 				System.out.println("사용자 승리!!");
-			}
+			}else if (cpuBingGo && userBingGo) {
+				if (util.bingGoALLCount(user) == util.bingGoALLCount(cpu)) {
+					System.out.println("같은 빙고수 입니다. 먼저 더 많은 빙고수를 얻으시면 승리입니다.");
+				}else if(util.bingGoALLCount(user) > util.bingGoALLCount(cpu)){
+					
+				}else if (util.bingGoALLCount(user) < util.bingGoALLCount(cpu)) {
+					
+				}
+			}*/
 		}
 			
 		
@@ -196,9 +219,13 @@ public class MainBoard {
 		int count = util.bingGoALLCount(vo);
 		
 		if (count >= bingGo) {
+			System.out.println("=============count==============");
+			util.insertPlayingView(vo);
+			System.out.println("=============="+count+"===============");
+			util.randomPlayingView(vo);
+			System.out.println("=================================");
 			result = true;
-		}else {
-			System.out.println(count + " : " + bingGo);
+//			System.out.println(count + " : " + bingGo);
 		}
 		
 		return result;
