@@ -90,9 +90,9 @@ public class MainBoard {
 			
 			do {
 				util.inserNumbersView();
-//				if (setting[2]==1) util.randomPlayingView(user);
-//				else util.insertPlayingView(user);
-				util.insertPlayingView(user);
+				if (setting[1]==1) util.randomPlayingView(user);
+				else util.insertPlayingView(user);
+//				util.insertPlayingView(user);
 				System.out.print("숫자를 입력하세요  : ");
 				String insertTemp = sc.next();
 				insert = util.whileNumberInserting(insertTemp);
@@ -108,7 +108,10 @@ public class MainBoard {
 				singGame(insert);
 			}else if(setting[1]==2){
 				//cpu
-				vsCPURGame(insert);
+				vsCPURGame(insert ,"user");
+				if(winner)break;
+				vsCPURGame(insert ,"cpu");
+				if(winner)break;
 			}
 		}
 		System.out.println("=======================================");
@@ -135,50 +138,18 @@ public class MainBoard {
 	}
 	/**
 	 * 게임 play
-	 * @param int
+	 * @param int , String
 	 * @version 0.1
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
 	 *   수정일         수정자           수정내용
-	 * 18.06.20	김진호               작성
+	 * 18.06.22	김진호               작성
 	*/
-	public void vsCPURGame(int num){
+	public void vsCPURGame(int num,String clinet){
 		boolean userBingGo = false;
 		boolean cpuBingGo = false;
-		// 위치탐색 반영
-		user = util.insertChecking(num, user);
-		// 빙고 여부체크
-		userBingGo = gameResult(user);
-		// 위치탐색 반영
-		cpu = util.insertChecking(num, cpu);
-		// 빙고 여부체크
-		cpuBingGo = gameResult(cpu);
-		// 기록
-		util.logPlaying(user,cpu,"user");
-		// 게임승리 여부
-		if (cpuBingGo && !userBingGo) {
-			System.out.println("컴퓨터 승리!!");
-		}else if (!cpuBingGo && userBingGo) {
-			System.out.println("사용자 승리!!");
-		}else {
-			// 컴퓨터  턴
-			boolean insertNumberCheck = true;
-			do {
-				/*2018.06.22 변경
-				num = ((int) (Math.random() * max))+1 ;
-//				log.info(num +" 반벅여부 측정?" + max);
-				insertNumberCheck = util.insertArea(num);
-				if (insertNumberCheck) {
-//					log.info(insertNumberCheck +"범위 반벅여부 측정?");
-					insertNumberCheck = util.insertCheck(num);
-//					log.info(insertNumberCheck +"중복여부 반벅여부 측정?");
-				}*/
-				int[] cpuInser = util.lineMax(cpu);
-				num = util.cpuInsertFind(cpu, cpuInser[0], cpuInser[1]);
-				insertNumberCheck = util.insertCheck(num);
-			} while (!insertNumberCheck);
-			
-
+		if (clinet.equals("user")) {
+			// 위치탐색 반영
 			user = util.insertChecking(num, user);
 			// 빙고 여부체크
 			userBingGo = gameResult(user);
@@ -186,11 +157,11 @@ public class MainBoard {
 			cpu = util.insertChecking(num, cpu);
 			// 빙고 여부체크
 			cpuBingGo = gameResult(cpu);
-			
-			util.logPlaying(user,cpu,"cpu");
+			// 기록
+			util.logPlaying(user,cpu,"user");
 			// 게임승리 여부
 			if (userBingGo || cpuBingGo) {
-				log.info("승리조건 충족");
+//				log.info("승리조건 충족");
 				if(util.bingGoALLCount(user) > util.bingGoALLCount(cpu)){
 					System.out.println("사용자 승리!!");
 					winner =true;
@@ -201,21 +172,38 @@ public class MainBoard {
 					System.out.println("빙고수가 같습니다. 먼저 더 많은 빙고수를 얻으시면 승리입니다.");
 				}
 			}
-			/*if (cpuBingGo && !userBingGo) {
-				System.out.println("컴퓨터 승리!!");
-			}else if (!cpuBingGo && userBingGo) {
-				System.out.println("사용자 승리!!");
-			}else if (cpuBingGo && userBingGo) {
-				if (util.bingGoALLCount(user) == util.bingGoALLCount(cpu)) {
-					System.out.println("같은 빙고수 입니다. 먼저 더 많은 빙고수를 얻으시면 승리입니다.");
-				}else if(util.bingGoALLCount(user) > util.bingGoALLCount(cpu)){
-					
-				}else if (util.bingGoALLCount(user) < util.bingGoALLCount(cpu)) {
-					
-				}
-			}*/
-		}
+		}else if(clinet.equals("cpu")) {
+			// 컴퓨터  턴
+			boolean insertNumberCheck = true;
+			do {
+				int[] cpuInser = util.lineMax(cpu);
+				//        개인 제작 빙고 ai 알고리즘
+				num = util.cpuInsertFind(cpu, cpuInser[0], cpuInser[1]);
+				insertNumberCheck = util.insertCheck(num);
+			} while (!insertNumberCheck);
 			
+	
+			user = util.insertChecking(num, user);
+			// 빙고 여부체크
+			userBingGo = gameResult(user);
+			// 위치탐색 반영
+			cpu = util.insertChecking(num, cpu);
+			// 빙고 여부체크
+			cpuBingGo = gameResult(cpu);
+			util.logPlaying(user,cpu,"cpu");
+			if (userBingGo || cpuBingGo) {
+//				log.info("승리조건 충족");
+				if(util.bingGoALLCount(user) > util.bingGoALLCount(cpu)){
+					System.out.println("사용자 승리!!");
+					winner =true;
+				}else if (util.bingGoALLCount(user) < util.bingGoALLCount(cpu)) {
+					System.out.println("컴퓨터 승리!!");
+					winner =true;
+				}else if (util.bingGoALLCount(user) == util.bingGoALLCount(cpu)) {
+					System.out.println("빙고수가 같습니다. 먼저 더 많은 빙고수를 얻으시면 승리입니다.");
+				}
+			}
+		}
 		
 	}
 	/**
@@ -234,10 +222,10 @@ public class MainBoard {
 		
 		if (count >= bingGo) {
 			System.out.println("=============count==============");
-			util.insertPlayingView(vo);
+//			util.insertPlayingView(vo);
 			System.out.println("=============="+count+"===============");
-			util.randomPlayingView(vo);
-			System.out.println("=================================");
+//			util.randomPlayingView(vo);
+//			System.out.println("=================================");
 			result = true;
 //			System.out.println(count + " : " + bingGo);
 		}
