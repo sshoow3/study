@@ -1,5 +1,8 @@
 package com.test.util;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,6 +21,8 @@ public class Utill {
 	static int max;
 	static int boardsize;
 	static int bingGo;
+	static String folder = "";
+	static String file = "";
 
 	static Logger log = Logger.getLogger(Utill.class.getName());
 	static ManagerVO manager = new ManagerVO();
@@ -373,7 +378,6 @@ public class Utill {
 		return result;
 
 	}
-
 	/**
 	 * 게임 플레이 중 기록 파일저장 - 작성예정
 	 * 
@@ -383,10 +387,115 @@ public class Utill {
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
 	 *   수정일         수정자           수정내용
-	 * 18.06.19	김진호               작성
+	 * 18.06.22 김진호               작성
 	 */
-	public void logFileText() {
-		//
+	public void logPlaying(BoardVO user ,BoardVO cpu ,String client){
+		String text = "";
+		if (!client.equals("1인용")&&!client.equals("start")){
+			text = client +"차례  \r\n";
+
+		}
+		int[] insertNumber = manager.getChoiceNum();
+		int insercount = manager.getInsertcount();
+		int[] numberSort = new int[insercount];
+		
+		
+		for (int i = 0; i < insercount; i++) {
+			numberSort[i] = insertNumber[i];
+		}
+
+		Arrays.sort(numberSort);
+
+		for (int i = 0; i < insercount; i++) {
+			insertNumber[i] = numberSort[i];
+		}
+
+		text += "===========사용된 숫자 입니다 ===========\r\n";
+		for (int i = 0; i < insercount; i++) {
+			text += String.format(" %3d ", insertNumber[i]);
+			if ((i + 1) % 5 == 0 && i != 0 && (i + 1 != insercount)) {
+				text += "\r\n";
+			}
+		}
+		text += "\r\n========================================\r\n";
+		
+		
+		int[][] userboard = user.getNumberboard();
+		int[][] cpuboard = cpu.getNumberboard();
+		boolean[][] usercheckboard = user.getCheckboard();
+		boolean[][] cpucheckboard = cpu.getCheckboard();
+		
+		for (int i = 0; i < userboard.length; i++) {
+			String userTemp = "";
+			String cpuTemp = "";
+			for (int j = 0; j < userboard.length; j++) {
+				
+				if (usercheckboard[i][j]) {
+					userTemp += String.format(" %3s ", " O ");
+				}else {
+					userTemp += String.format(" %3d ", userboard[i][j]);
+				}
+				
+				if (!client.equals("1인용")||!client.equals("start")) {
+					if (cpucheckboard[i][j]) {
+						cpuTemp += String.format(" %3s ", " O ");
+					}else {
+						cpuTemp += String.format(" %3d ", cpuboard[i][j]);
+					}	
+				}
+				
+			}
+			text += userTemp +"        " +cpuTemp+"\r\n";
+		}
+		text += "\r\n========================================\r\n";
+		switch (client) {
+		case "user":	text+= bingGoALLCount(user) + "빙고\r\n";		break;
+		case "cpu":		text+= bingGoALLCount(cpu) + "빙고\r\n";		break;
+
+		}
+		text +=  "\r\n========================================\r\n";
+		logFileText(text);
+	}
+
+	/**
+	 * 로그 파일 쓰기
+	 * 
+	 * @param String
+	 * @return int
+	 * @version 0.1
+	 * @see <pre>
+	 * == 개정이력(Modification Information) ==
+	 *   수정일         수정자           수정내용
+	 * 18.06.22 김진호               작성
+	 */
+	public void logFileText(String text) {
+		File f = new File(folder+"\\"+file);
+		
+		
+		if (f.exists()) {
+			
+			
+		}else {
+			try {
+				f.createNewFile();
+			} catch (Exception e) {
+				log.info("파일 생성실");
+			}
+		}
+		
+		try {
+			
+			
+			FileWriter fileWriter = new FileWriter(f,true);
+			fileWriter.write(text);
+			fileWriter.flush();
+			fileWriter.close();
+		} catch (IOException e) {
+			log.info("파일 쓰기 실폐");
+			e.printStackTrace();
+		}
+		
+		
 	}
 
 	/**
@@ -398,10 +507,39 @@ public class Utill {
 	 * @see <pre>
 	 * == 개정이력(Modification Information) ==
 	 *   수정일         수정자           수정내용
-	 * 18.06.20	김진호               작성
+	 * 18.06.22 김진호               작성
 	 */
-	public void startSettingLog() {
-
+	public void startSettingLog(String ifolder, String ifile ,int[] setting) {
+		
+		folder = ifolder;
+		file = ifile;
+		
+		File f = new File(ifolder);
+		
+		if (f.mkdirs()) {
+			log.info("이번주 첫 게임 시작");
+		}
+		
+		String text = "";
+		text += "[1] 빙고판 크기는 : " +setting[0] + " X " + setting[0] + "입니다. \r\n" ;
+		switch (setting[1]) {
+		case 1:		text+="[2] 모드 : 1인용 \r\n";	break;
+		case 2:		text+="[2] 모드 : vs cpu \r\n";	break;
+		}
+		switch (setting[2]) {
+		case 1:		text+="[3] 보드설정 : 랜덤 \r\n";	break;
+		case 2:		text+="[3] 보드설정 : 수동 \r\n";	break;
+		}
+		switch (setting[3]) {
+		case 1:		text+="[4] 난이도 easy : 1 ~ "+max+" \r\n";	break;
+		case 2:		text+="[4] 난이도 hard : 1 ~ "+max+" \r\n";	break;
+		}
+		switch (setting[2]) {
+		case 1:		text+="[5] 승리 조건은  "+setting[4]+"줄이상 빙고입니다.  \r\n";	break;
+		case 2:		text+="[5] 승리 조건은  "+setting[4]+"줄이상 빙고 상대와 빙고 수가  같은경우 연장전입니다.  \r\n";	break;
+		}
+		text += "\r\n=============================\r\n\r\n=============================\r\n";
+		logFileText(text);
 	}
 
 	/**

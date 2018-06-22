@@ -131,10 +131,10 @@ public class Main {
 		// ----------------------------------------------------------
 		select[4] = 0;
 		try {
-			System.out.print("5.빙고 완성 숫자 입력(최소1이상) :");
+			System.out.printf("5.빙고 완성 숫자 입력(최소1이상 %d이하) :",select[0]);
 			insertTemp = sc.next();
 			select[4] = ut.whileNumberInserting(insertTemp);
-			if (select[4]>0) {
+			if (select[4]>0 && select[4]<=select[0]) {
 				check = false;
 			}
 		} catch (Exception e) {
@@ -142,10 +142,10 @@ public class Main {
 		}
 		while (check) {
 			System.out.println("잘못입력하셨습니다.");
-			System.out.print("5.빙고 완성 숫자 입력(최소1이상) :");
+			System.out.print("5.빙고 완성 숫자 입력(최소1이상 %d이하) :");
 			insertTemp = sc.next();
 			select[4] = ut.whileNumberInserting(insertTemp);
-			if (select[4]>0) {
+			if (select[4]>0 && select[4]<=select[0]) {
 				check = false;
 			}
 		}

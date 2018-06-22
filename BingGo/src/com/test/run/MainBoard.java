@@ -3,6 +3,8 @@ package com.test.run;
  * 게임이 실행되는 메인보드
  * */
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
@@ -23,6 +25,12 @@ public class MainBoard {
 	static int bingGo ;
 	static boolean winner = false;
 	static int max;
+	static Date d = new Date();
+	static SimpleDateFormat sdf = new SimpleDateFormat("dd일HH시mm분");
+	static SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-W");
+	
+	static String folder = "";
+	static String file = "";
 	
 	/**
 	 * 게임 초기 셋팅값입력
@@ -42,6 +50,10 @@ public class MainBoard {
 		user = new BoardVO();
 		cpu  = new BoardVO();
 		
+		folder= "C:\\Users\\netcomo\\git\\BingGo\\BingGo\\gamelog\\"+dt.format(d) ;
+		file= sdf.format(d)+".txt";
+		util.startSettingLog(folder,file,setting);
+		
 		user.setCheckboard(util.booleanBoadSetting(setting[0]));
 		user.setNumberboard(util.startSetting(setting));
 		cpu.setCheckboard(util.booleanBoadSetting(setting[0]));
@@ -54,6 +66,7 @@ public class MainBoard {
 			this.max = (setting[0] * setting[0] * 4);
 		else
 			this.max = setting[0] * setting[0];
+		
 	}
 	
 	/**
@@ -70,6 +83,7 @@ public class MainBoard {
 	*/
 	public void gamePlay(int[] setting){
 		Scanner sc = new Scanner(System.in);
+		util.logPlaying(user,cpu,"start");
 		while (!winner) {
 			int insert = 0;
 			boolean insertNumberCheck = false;
@@ -117,6 +131,7 @@ public class MainBoard {
 		
 		// 게임승리 여부
 		winner = gameResult(user);
+		util.logPlaying(user,cpu,"1인용");
 	}
 	/**
 	 * 게임 play
@@ -138,6 +153,8 @@ public class MainBoard {
 		cpu = util.insertChecking(num, cpu);
 		// 빙고 여부체크
 		cpuBingGo = gameResult(cpu);
+		// 기록
+		util.logPlaying(user,cpu,"user");
 		// 게임승리 여부
 		if (cpuBingGo && !userBingGo) {
 			System.out.println("컴퓨터 승리!!");
@@ -160,15 +177,17 @@ public class MainBoard {
 				num = util.cpuInsertFind(cpu, cpuInser[0], cpuInser[1]);
 				insertNumberCheck = util.insertCheck(num);
 			} while (!insertNumberCheck);
+			
 
-
-			util.insertChecking(num, user);
+			user = util.insertChecking(num, user);
 			// 빙고 여부체크
 			userBingGo = gameResult(user);
 			// 위치탐색 반영
 			cpu = util.insertChecking(num, cpu);
 			// 빙고 여부체크
 			cpuBingGo = gameResult(cpu);
+			
+			util.logPlaying(user,cpu,"cpu");
 			// 게임승리 여부
 			if (userBingGo || cpuBingGo) {
 				log.info("승리조건 충족");

@@ -21,18 +21,6 @@ public class Common {
 	 * 3-2 활성화 위치에 따른  각 활성화수 총값 높은 위치 검색
 	 * 3-3 여러건일 경우 랜덤으로 선택
 	*/
-	public void test1(BoardVO boardVO){
-		Utill utill = new Utill();
-		
-	}
-	
-	public AIVO lineData(String lineTpe , int line){
-		AIVO aivo = new AIVO();
-		
-		
-		
-		return aivo;
-	}
 	
 	public int max(int x, int y){
 		
