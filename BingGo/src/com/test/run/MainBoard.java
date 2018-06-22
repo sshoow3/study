@@ -94,12 +94,7 @@ public class MainBoard {
 				singGame(insert);
 			}else if(setting[1]==2){
 				//cpu
-				if (setting[2]==1) {
-					//랜덤게임
-					vsCPURGame(insert);
-				}else {
-					//수동입력 게임
-				}
+				vsCPURGame(insert);
 			}
 		}
 		System.out.println("=======================================");
