@@ -50,7 +50,7 @@ public class MainBoard {
 		user = new BoardVO();
 		cpu  = new BoardVO();
 		
-		folder= "C:\\Users\\netcomo\\git\\BingGo\\BingGo\\gamelog\\"+dt.format(d) ;
+		folder= "C:\\JavaStudy\\BingGo\\log"+dt.format(d) ;
 		file= sdf.format(d)+".txt";
 		util.startSettingLog(folder,file,setting);
 		
