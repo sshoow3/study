@@ -950,8 +950,13 @@ public class Utill {
 			aivo = temp.get(i);
 			if (aivo.getTrueCount() == max) {
 				int[] tempArr = compare(boardVO, aivo);
-				if (tempArr[2]>result[2]) {
+				if (aivo.getLine() == ((boardsize/2) +(boardsize%2)) && !boardVO.getCheckboard()[((boardsize/2) +(boardsize%2))][((boardsize/2) +(boardsize%2))]) {
 					result = tempArr;
+				}else if (tempArr[2]>result[2]) {
+					result = tempArr;
+				}else if (tempArr[2] == tempArr[2] && aivo.getLineType().equals("z")) {
+					result = tempArr;
+					
 				}
 			}
 		}
